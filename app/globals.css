@@ -3,25 +3,184 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #F7F7F5;
+  --bg-soft: #FFFFFF;
+  --bg-warm: #EFEFEC;
+  --ink: #1A2421;
+  --ink-soft: #3D4A45;
+  --ink-dim: #6B7672;
+  --ink-faint: #9AA29E;
+  --line: rgba(26, 36, 33, 0.10);
+  --line-strong: rgba(26, 36, 33, 0.22);
+  --emerald: #0E7C5C;
+  --emerald-deep: #0A4F3B;
+  --emerald-darker: #062E22;
+  --emerald-bright: #16A47A;
+  --emerald-soft: #E3F1EB;
+  --emerald-tint: #F1F7F4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-raleway), system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── Layout helpers ─────────────────────────────── */
+.section-pad {
+  padding-top: 140px;
+  padding-bottom: 140px;
+}
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+.hero-pad {
+  padding-top: 140px;
+  padding-bottom: 80px;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+/* ── Reveal animation ───────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal.delay-1 { transition-delay: .12s; }
+.reveal.delay-2 { transition-delay: .24s; }
+.reveal.delay-3 { transition-delay: .36s; }
+
+/* ── Keyframes ──────────────────────────────────── */
+@keyframes scrollDot {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(50px); opacity: 0; }
+}
+
+@keyframes waPulse {
+  0% { box-shadow: 0 8px 24px rgba(37,211,102,0.4), 0 0 0 0 rgba(37,211,102,0.5); }
+  70% { box-shadow: 0 8px 24px rgba(37,211,102,0.4), 0 0 0 16px rgba(37,211,102,0); }
+  100% { box-shadow: 0 8px 24px rgba(37,211,102,0.4), 0 0 0 0 rgba(37,211,102,0); }
+}
+
+/* ── Hero buttons full-width on mobile ──────────── */
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ── Form card ──────────────────────────────────── */
+.form-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  padding: 48px 44px;
+  position: relative;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset,
+              0 30px 60px -24px rgba(14,124,92,0.18),
+              0 8px 24px rgba(26,36,33,0.04);
+}
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .section-pad {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .hero-pad {
+    padding-top: 100px;
+    padding-bottom: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .hero-btns {
+    flex-direction: column;
+  }
+  .hero-btns a,
+  .hero-btns button {
+    width: 100%;
+    justify-content: center;
+  }
+  .form-card {
+    padding: 32px 24px;
+  }
+  .why-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .why-item-card {
+    border-right: none !important;
+    border-bottom: 1px solid var(--line) !important;
+    padding: 40px 20px !important;
+  }
+  .asesorias-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .catalog-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .products-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@media (max-width: 480px) {
+  .section-pad {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .hero-pad {
+    padding-top: 90px;
+    padding-bottom: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .form-card {
+    padding: 28px 18px;
   }
 }

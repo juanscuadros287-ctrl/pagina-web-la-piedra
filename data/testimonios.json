@@ -1,0 +1,34 @@
+[
+  {
+    "id": "t-001",
+    "nombre": "Valentina Morales",
+    "negocio": "Joyería artesanal",
+    "cita": "Empecé comprando un lote de $150.000 y hoy ya tengo mi propio taller. La asesoría de La Piedra fue clave — me explicaron todo desde cero sin asumir nada.",
+    "ciudad": "Bogotá",
+    "avatar": ""
+  },
+  {
+    "id": "t-002",
+    "nombre": "Carlos Henríquez",
+    "negocio": "Reventa en ferias",
+    "cita": "Lo que más me convenció fue que me enviaron video de cada piedra antes de comprar. Nada de sorpresas — lo que ves es lo que llega. Ya llevo 4 lotes con ellos.",
+    "ciudad": "Medellín",
+    "avatar": ""
+  },
+  {
+    "id": "t-003",
+    "nombre": "Lucía Ramírez",
+    "negocio": "Tienda online",
+    "cita": "Vendo esmeraldas en Instagram y La Piedra es mi proveedor principal. La calidad es consistente y el certificado de origen le da mucha confianza a mis clientes.",
+    "ciudad": "Cali",
+    "avatar": ""
+  },
+  {
+    "id": "t-004",
+    "nombre": "Andrés Ospina",
+    "negocio": "Coleccionista",
+    "cita": "Compré mi primera esmeralda de colección aquí. El proceso fue transparente, me explicaron el efecto jardinée y por qué hace única a la Muzo. Ahora tengo tres piezas.",
+    "ciudad": "Pereira",
+    "avatar": ""
+  }
+]
