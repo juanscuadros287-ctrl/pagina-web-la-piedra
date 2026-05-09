@@ -1,6 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+type Portada = { categoria: string; imagen_url: string | null }
 
 const TIERS = [
   {
@@ -43,6 +46,16 @@ const TIERS = [
 ]
 
 export default function CatalogSection() {
+  const [portadas, setPortadas] = useState<Portada[]>([])
+
+  useEffect(() => {
+    supabase.from('portadas').select('categoria,imagen_url').then(({ data }) => {
+      setPortadas(data || [])
+    })
+  }, [])
+
+  const getPortada = (cat: string) => portadas.find(p => p.categoria === cat)?.imagen_url || null
+
   return (
     <section
       id="catalogo"
@@ -68,7 +81,7 @@ export default function CatalogSection() {
         {/* Tier cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }} className="catalog-grid">
           {TIERS.map((t, i) => (
-            <TierCard key={t.key} tier={t} delay={i} />
+            <TierCard key={t.key} tier={t} delay={i} portadaUrl={getPortada(t.key)} />
           ))}
         </div>
 
@@ -83,7 +96,7 @@ export default function CatalogSection() {
   )
 }
 
-function TierCard({ tier, delay }: { tier: typeof TIERS[0]; delay: number }) {
+function TierCard({ tier, delay, portadaUrl }: { tier: typeof TIERS[0]; delay: number; portadaUrl: string | null }) {
   const waText = `Hola, me interesa el Lote ${tier.label}`
   const waUrl = `https://wa.me/573148316745?text=${encodeURIComponent(waText)}`
   const catalogUrl = `/catalogo/${tier.key.toLowerCase()}`
@@ -106,8 +119,15 @@ function TierCard({ tier, delay }: { tier: typeof TIERS[0]; delay: number }) {
         display: 'grid',
         placeItems: 'center',
         borderBottom: '1px solid var(--line)',
+        overflow: 'hidden',
+        position: 'relative',
       }}>
-        <div style={{ width: '60%' }}>{tier.gem}</div>
+        {portadaUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={portadaUrl} alt={tier.label} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+        ) : (
+          <div style={{ width: '60%' }}>{tier.gem}</div>
+        )}
       </div>
 
       {/* Body */}
