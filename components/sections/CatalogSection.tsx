@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { supabase, type Producto } from '@/lib/supabase'
+import React from 'react'
 
 const TIERS = [
   {
@@ -44,26 +43,6 @@ const TIERS = [
 ]
 
 export default function CatalogSection() {
-  const [productos, setProductos] = useState<Producto[]>([])
-  const [loading, setLoading] = useState(true)
-  const [filtro, setFiltro] = useState<'todos' | 'Genesis' | 'Dual' | 'Elite'>('todos')
-
-  useEffect(() => {
-    console.log('[Catalog] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-    supabase
-      .from('productos')
-      .select('*')
-      .eq('disponible', true)
-      .order('created_at', { ascending: false })
-      .then(({ data, error }) => {
-        console.log('[Catalog] data:', data, 'error:', error)
-        setProductos(data || [])
-        setLoading(false)
-      })
-  }, [])
-
-  const filtrados = filtro === 'todos' ? productos : productos.filter(p => p.categoria === filtro)
-
   return (
     <section
       id="catalogo"
@@ -86,123 +65,28 @@ export default function CatalogSection() {
           </p>
         </div>
 
-        {/* Tier cards (static) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, marginBottom: 80 }} className="catalog-grid">
+        {/* Tier cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }} className="catalog-grid">
           {TIERS.map((t, i) => (
-            <TierCard key={t.key} tier={t} delay={i} onFilter={() => setFiltro(t.key)} />
+            <TierCard key={t.key} tier={t} delay={i} />
           ))}
         </div>
 
-        {/* Products section */}
-        {(loading || productos.length > 0) && (
-          <>
-            <div className="reveal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 40 }}>
-              <div>
-                <span style={{ display: 'block', fontSize: 11, letterSpacing: '0.36em', textTransform: 'uppercase', color: 'var(--emerald)', fontFamily: 'var(--font-raleway)', fontWeight: 500, marginBottom: 8 }}>
-                  Inventario disponible
-                </span>
-                <h3 style={{ fontSize: 'clamp(20px, 2vw, 28px)', color: 'var(--ink)', fontFamily: 'var(--font-cinzel)' }}>
-                  Piezas actuales
-                </h3>
-              </div>
-              {/* Filter pills */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {(['todos', 'Genesis', 'Dual', 'Elite'] as const).map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setFiltro(cat)}
-                    style={{
-                      padding: '8px 18px',
-                      borderRadius: 999,
-                      border: '1px solid',
-                      borderColor: filtro === cat ? 'var(--emerald)' : 'var(--line)',
-                      background: filtro === cat ? 'var(--emerald)' : 'transparent',
-                      color: filtro === cat ? '#fff' : 'var(--emerald)',
-                      fontSize: 11,
-                      letterSpacing: '0.14em',
-                      textTransform: 'uppercase',
-                      fontFamily: 'var(--font-raleway)',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all .25s',
-                    }}
-                  >
-                    {cat === 'todos' ? 'Todos' : cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {loading ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--emerald)', borderTopColor: 'transparent', animation: 'spin 0.7s linear infinite' }} />
-              </div>
-            ) : filtrados.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--ink-dim)', fontFamily: 'var(--font-raleway)' }}>
-                <p style={{ fontSize: 14 }}>No hay piezas disponibles en esta categoría ahora mismo.</p>
-                <p style={{ fontSize: 13, marginTop: 8 }}>Escríbenos para consultar disponibilidad.</p>
-              </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 28 }} className="products-grid">
-                {filtrados.map((p) => (
-                  <ProductCard key={p.id} producto={p} />
-                ))}
-              </div>
-            )}
-          </>
-        )}
-
-        {/* No products at all — CTA */}
-        {!loading && productos.length === 0 && (
-          <div className="reveal" style={{ textAlign: 'center', padding: '20px 0' }}>
-            <p style={{ color: 'var(--ink-soft)', fontFamily: 'var(--font-raleway)', fontSize: 15, marginBottom: 24 }}>
-              Escríbenos por WhatsApp para conocer el inventario disponible.
-            </p>
-            <a
-              href="https://wa.me/573148316745?text=Hola%2C%20me%20gustar%C3%ADa%20ver%20el%20cat%C3%A1logo%20de%20esmeraldas"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '14px 32px',
-                background: 'var(--emerald)',
-                color: '#fff',
-                fontSize: 12,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                fontFamily: 'var(--font-raleway)',
-                fontWeight: 600,
-                textDecoration: 'none',
-                transition: 'opacity .25s',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '0.85' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1' }}
-            >
-              Ver catálogo por WhatsApp
-            </a>
-          </div>
-        )}
       </div>
 
       <style>{`
         @media (max-width: 960px) {
           .catalog-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
-          .products-grid { grid-template-columns: 1fr 1fr !important; }
         }
-        @media (max-width: 540px) {
-          .products-grid { grid-template-columns: 1fr !important; }
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </section>
   )
 }
 
-function TierCard({ tier, delay, onFilter }: { tier: typeof TIERS[0]; delay: number; onFilter: () => void }) {
+function TierCard({ tier, delay }: { tier: typeof TIERS[0]; delay: number }) {
   const waText = `Hola, me interesa el Lote ${tier.label}`
   const waUrl = `https://wa.me/573148316745?text=${encodeURIComponent(waText)}`
+  const catalogUrl = `/catalogo/${tier.key.toLowerCase()}`
 
   return (
     <article
@@ -256,8 +140,10 @@ function TierCard({ tier, delay, onFilter }: { tier: typeof TIERS[0]; delay: num
         </ul>
 
         <div style={{ display: 'flex', gap: 12 }}>
-          <button
-            onClick={onFilter}
+          <a
+            href={catalogUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               flex: 1,
               padding: '13px 16px',
@@ -271,12 +157,16 @@ function TierCard({ tier, delay, onFilter }: { tier: typeof TIERS[0]; delay: num
               fontWeight: 600,
               cursor: 'pointer',
               transition: 'all .3s',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-            onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'var(--emerald)'; el.style.color = '#fff' }}
-            onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'transparent'; el.style.color = 'var(--emerald)' }}
+            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--emerald)'; el.style.color = '#fff' }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'transparent'; el.style.color = 'var(--emerald)' }}
           >
             Ver piezas
-          </button>
+          </a>
           <a
             href={waUrl}
             target="_blank"
@@ -314,138 +204,6 @@ function TierCard({ tier, delay, onFilter }: { tier: typeof TIERS[0]; delay: num
           box-shadow: 0 30px 60px -20px rgba(14,124,92,0.25), 0 8px 24px rgba(26,36,33,0.06);
         }
       `}</style>
-    </article>
-  )
-}
-
-function ProductCard({ producto }: { producto: Producto }) {
-  const waText = `Hola, me interesa la piedra: ${producto.nombre}${producto.precio_mostrado ? ` (${producto.precio_mostrado})` : ''}`
-  const waUrl = `https://wa.me/573148316745?text=${encodeURIComponent(waText)}`
-
-  const catColor = producto.categoria === 'Elite' ? '#0A4F3B' : producto.categoria === 'Dual' ? '#0E7C5C' : '#16A47A'
-
-  return (
-    <article
-      className="product-card-hover"
-      style={{
-        background: '#fff',
-        border: '1px solid var(--line)',
-        overflow: 'hidden',
-        transition: 'transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s, border-color .4s',
-      }}
-    >
-      {/* Image */}
-      <div style={{
-        aspectRatio: '1/1',
-        background: 'linear-gradient(135deg, #E3F1EB, #F1F7F4)',
-        position: 'relative',
-        overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-        {producto.imagen_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={producto.imagen_url}
-            alt={producto.nombre}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-        ) : (
-          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-            <path d="M28 6L46 16.5L42 40H14L10 16.5Z" stroke="#0E7C5C" strokeWidth="1.5" fill="rgba(14,124,92,0.08)"/>
-            <path d="M28 6L28 40M10 16.5L46 16.5" stroke="#0E7C5C" strokeWidth="1" opacity="0.4"/>
-          </svg>
-        )}
-        <span style={{
-          position: 'absolute',
-          top: 12,
-          left: 12,
-          fontSize: 9,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: '#fff',
-          padding: '4px 10px',
-          background: catColor,
-          fontFamily: 'var(--font-raleway)',
-          fontWeight: 600,
-        }}>
-          {producto.categoria}
-        </span>
-      </div>
-
-      {/* Info */}
-      <div style={{ padding: '20px 22px 24px' }}>
-        <h4 style={{
-          fontFamily: 'var(--font-cinzel)',
-          fontSize: 14,
-          color: 'var(--ink)',
-          letterSpacing: '0.06em',
-          textTransform: 'uppercase',
-          marginBottom: 8,
-          lineHeight: 1.4,
-        }}>
-          {producto.nombre}
-        </h4>
-
-        {/* Details */}
-        <div style={{ display: 'flex', gap: 16, marginBottom: 12, flexWrap: 'wrap' }}>
-          {producto.quilates && (
-            <span style={{ fontSize: 12, color: 'var(--ink-soft)', fontFamily: 'var(--font-raleway)' }}>
-              ⚖ {producto.quilates}
-            </span>
-          )}
-          {producto.color && (
-            <span style={{ fontSize: 12, color: 'var(--ink-soft)', fontFamily: 'var(--font-raleway)' }}>
-              ◆ {producto.color}
-            </span>
-          )}
-        </div>
-
-        {producto.descripcion && (
-          <p style={{ fontSize: 13, color: 'var(--ink-soft)', lineHeight: 1.65, marginBottom: 16, fontFamily: 'var(--font-raleway)', fontWeight: 300 }}>
-            {producto.descripcion}
-          </p>
-        )}
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 14, borderTop: '1px solid var(--line)', gap: 12 }}>
-          {producto.precio_mostrado ? (
-            <span style={{ fontFamily: 'var(--font-cinzel)', fontSize: 15, color: 'var(--emerald)', fontWeight: 600 }}>
-              {producto.precio_mostrado}
-            </span>
-          ) : (
-            <span style={{ fontSize: 12, color: 'var(--ink-dim)', fontFamily: 'var(--font-raleway)', letterSpacing: '0.12em' }}>
-              Consultar precio
-            </span>
-          )}
-
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '9px 16px',
-              background: 'var(--emerald)',
-              color: '#fff',
-              fontSize: 10,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              fontFamily: 'var(--font-raleway)',
-              fontWeight: 600,
-              textDecoration: 'none',
-              flexShrink: 0,
-              transition: 'opacity .25s',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '0.85' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1' }}
-          >
-            Consultar
-          </a>
-        </div>
-      </div>
     </article>
   )
 }
