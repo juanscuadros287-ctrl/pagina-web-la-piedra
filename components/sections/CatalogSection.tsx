@@ -49,16 +49,21 @@ export default function CatalogSection() {
   const [filtro, setFiltro] = useState<'todos' | 'Genesis' | 'Dual' | 'Elite'>('todos')
 
   useEffect(() => {
+    console.log('[Catalog] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
     supabase
       .from('productos')
       .select('*')
       .eq('disponible', true)
       .order('created_at', { ascending: false })
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        console.log('[Catalog] data:', data, 'error:', error)
         setProductos(data || [])
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch((err) => {
+        console.log('[Catalog] catch error:', err)
+        setLoading(false)
+      })
   }, [])
 
   const filtrados = filtro === 'todos' ? productos : productos.filter(p => p.categoria === filtro)
