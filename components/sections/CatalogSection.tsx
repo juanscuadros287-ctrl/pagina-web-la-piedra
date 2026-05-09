@@ -58,6 +58,7 @@ export default function CatalogSection() {
         setProductos(data || [])
         setLoading(false)
       })
+      .catch(() => setLoading(false))
   }, [])
 
   const filtrados = filtro === 'todos' ? productos : productos.filter(p => p.categoria === filtro)
