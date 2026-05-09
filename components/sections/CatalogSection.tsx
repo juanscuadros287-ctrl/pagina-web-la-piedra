@@ -60,10 +60,6 @@ export default function CatalogSection() {
         setProductos(data || [])
         setLoading(false)
       })
-      .catch((err) => {
-        console.log('[Catalog] catch error:', err)
-        setLoading(false)
-      })
   }, [])
 
   const filtrados = filtro === 'todos' ? productos : productos.filter(p => p.categoria === filtro)
@@ -148,8 +144,8 @@ export default function CatalogSection() {
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 28 }} className="products-grid">
-                {filtrados.map((p, i) => (
-                  <ProductCard key={p.id} producto={p} delay={i % 3} />
+                {filtrados.map((p) => (
+                  <ProductCard key={p.id} producto={p} />
                 ))}
               </div>
             )}
@@ -322,7 +318,7 @@ function TierCard({ tier, delay, onFilter }: { tier: typeof TIERS[0]; delay: num
   )
 }
 
-function ProductCard({ producto, delay }: { producto: Producto; delay: number }) {
+function ProductCard({ producto }: { producto: Producto }) {
   const waText = `Hola, me interesa la piedra: ${producto.nombre}${producto.precio_mostrado ? ` (${producto.precio_mostrado})` : ''}`
   const waUrl = `https://wa.me/573148316745?text=${encodeURIComponent(waText)}`
 
@@ -349,6 +345,7 @@ function ProductCard({ producto, delay }: { producto: Producto; delay: number })
         justifyContent: 'center',
       }}>
         {producto.imagen_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={producto.imagen_url}
             alt={producto.nombre}
