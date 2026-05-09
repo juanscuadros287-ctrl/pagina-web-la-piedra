@@ -325,7 +325,7 @@ function ProductCard({ producto, delay }: { producto: Producto; delay: number })
 
   return (
     <article
-      className={`reveal${delay > 0 ? ` delay-${delay}` : ''} product-card-hover`}
+      className="product-card-hover"
       style={{
         background: '#fff',
         border: '1px solid var(--line)',
